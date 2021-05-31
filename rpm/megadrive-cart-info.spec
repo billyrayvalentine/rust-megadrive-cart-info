@@ -5,6 +5,7 @@ Summary: Inspect and print Megadrive / Genesis rom headers from images
 License: MIT
 
 #Url: https://github.com/billyrayvalentine/python-megadrive-cart-info
+BuildRequires: rust cargo
 Source0: %{name}-%{version}.tar.gz
 #Requires: python3
 
@@ -17,9 +18,11 @@ The longer description for out application
 
 %prep
 # See https://rpm-packaging-guide.github.io/#setup
-# The app name is megadrive-cart-info but the repo is actually python-megadrive-cart-info
 # so tell setup to expect a different name
-%setup -n python-megadrive-cart-info-%{version}
+%setup
+
+%build
+cargo build -release
 
 %install
 mkdir -p %{buildroot}/usr/local/%{name}
