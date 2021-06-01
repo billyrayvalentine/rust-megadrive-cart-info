@@ -14,7 +14,7 @@ The longer description for our application
 %prep
 # See https://rpm-packaging-guide.github.io/#setup
 # so tell setup to expect a different name
-%setup -n %{name}
+%setup
 
 %build
 cargo test
