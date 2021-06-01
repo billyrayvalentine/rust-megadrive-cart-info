@@ -1,19 +1,18 @@
 Name: megadrive-cart-info
 Version: 0.1
 Release: 1
-Summary: Inspect and print Megadrive / Genesis rom headers from images
+Summary: Inspect and print Megadrive / Genesis ROM headers from images
 License: MIT
-
-BuildRequires: rust cargo
+Url: https://github.com/billyrayvalentine/rust-megadrive-cart-info
+Group: Productivity/Other
 Source0: %{name}-%{version}.tar.gz
+BuildRequires: rust cargo
 
 %description
-The longer description for our application
+Simple tool to inspect Megadrive / Genesis ROM images from the commandline.
 
 %pre
 %prep
-# See https://rpm-packaging-guide.github.io/#setup
-# so tell setup to expect a different name
 %setup
 
 %build
@@ -31,5 +30,5 @@ install -m 0655 target/release/%{name} %{buildroot}/%{_bindir}
 %license LICENSE
 
 %changelog
-* Sun Nov 17 2019 Billy Ray Valentine
+* Tue Jun 01 2021 Billy Ray Valentine
 - Initial release
