@@ -13,7 +13,6 @@ Simple tool to inspect Megadrive / Genesis ROM images from the commandline.
 
 %global debug_package %{nil}
 
-#%pre
 %prep
 %setup
 
