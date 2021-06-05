@@ -1,0 +1,17 @@
+<services>
+    <service name="obs_scm">
+        <param name="scm">git</param>
+        <param name="url">https://github.com/billyrayvalentine/rust-megadrive-cart-info.git</param>
+        <param name="revision">master</param>
+        <param name="extract">rpm/megadrive-cart-info.spec</param>
+        <param name="versionformat">@PARENT_TAG@</param>
+        <param name="changesgenerate">enable</param>
+        <param name="filename">megadrive-cart-info</param>
+    </service>
+    <service name="tar" mode="buildtime" />
+    <service name="recompress" mode="buildtime">
+        <param name="file">*.tar</param>
+        <param name="compression">gz</param>
+    </service>
+    <service mode="buildtime" name="set_version" />
+</services>
