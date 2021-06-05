@@ -29,4 +29,4 @@ jobs:
         with:
           data: ""
           webhook_url: ${{ secrets.OBS_TRIGGER_URL }}
-          options: "-H \"Authorization: Token ${{ secrets.OBS_TRIGGER_TOKEN }}\""
+          options: "--silent -H \"Authorization: Token ${{ secrets.OBS_TRIGGER_TOKEN }}\""
