@@ -1,6 +1,6 @@
 [package]
 name = "megadrive-cart-info"
-version = "0.1.0"
+version = "0.1.7"
 authors = ["Ben Sampson <github.com/billyrayvalentine"]
 edition = "2018"
 description = "Simple tool to inspect Megadrive / Genesis ROM images from the commandline"
