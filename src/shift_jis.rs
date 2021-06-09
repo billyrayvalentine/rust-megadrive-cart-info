@@ -123,6 +123,15 @@ mod test {
         assert_eq!(Vec::<u8>::new(), shift_jis_to_utf8(&[]));
     }
 
+    #[test]
+    fn shift_jis_double_byte_missing_second_bye() {
+        // 0x83 is a double byte char.  if the second byte is missing it shouldn't panic / crash
+        assert_eq!(
+            "キ".to_string(),
+            String::from_utf8_lossy(&shift_jis_to_utf8(&[0x83, 0x4C, 0x83]))
+        );
+    }
+
     // Test Katakana
     #[test]
     fn shift_jis_katakana_double_byte_ki() {
@@ -130,15 +139,6 @@ mod test {
         assert_eq!(
             "キ".to_string(),
             String::from_utf8_lossy(&shift_jis_to_utf8(&[0x83, 0x4C]))
-        );
-    }
-
-    #[test]
-    fn shift_jis_katakana_double_byte_missing_second_bye() {
-        // 0x83 is a double byte char.  if the second byte is missing it shouldn't panic / crash
-        assert_eq!(
-            "キ".to_string(),
-            String::from_utf8_lossy(&shift_jis_to_utf8(&[0x83, 0x4C, 0x83]))
         );
     }
 
