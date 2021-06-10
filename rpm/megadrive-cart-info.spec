@@ -9,7 +9,7 @@ Source0: %{name}-%{version}.tar.gz
 BuildRequires: rust cargo
 
 %description
-Simple tool to inspect Megadrive / Genesis ROM images from the commandline.
+Simple tool to inspect Megadrive / Genesis ROM images from the commandline
 
 %global debug_package %{nil}
 

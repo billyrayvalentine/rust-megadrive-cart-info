@@ -22,45 +22,55 @@ pub fn shift_jis_to_utf8(v: &[u8]) -> Vec<u8> {
             // Ascii
             0x00..=0x7F => new_bytes.push(v[pos]),
 
-            // Double byte
-            // 0x00-0x3F is never used
-            // 0x7F is never used
-            // TODO catch index error if double byte has not second byte
-
-            // Katakana
-            0x81 => {
-                match v[pos + 1] {
-                    0x5B => {
-                        new_bytes.push(0xE3);
-                        new_bytes.push(0x83);
-                        new_bytes.push(0xBC);
-                        pos += 1;
-                    }
-                    _ => {}
-                };
-            }
-
-            0x83 => {
-                match v[pos + 1] {
-                    0x40..=0x5E => {
-                        new_bytes.push(0xE3);
-                        new_bytes.push(0x82);
-                        new_bytes.push(v[pos + 1] + 0x61);
-                        pos += 1;
-                    }
-                    0x5F..=0x7E => {
-                        new_bytes.push(0xE3);
-                        new_bytes.push(0x83);
-                        new_bytes.push(v[pos + 1] + 0x21);
-                        pos += 1;
-                    }
-                    0x80..=0x96 => {
-                        new_bytes.push(0xE3);
-                        new_bytes.push(0x83);
-                        new_bytes.push(v[pos + 1] + 0x20);
-                        pos += 1;
+            // Double byte chars
+            0x81..=0x9F => {
+                // Check there is a second byte present if this is the last byte
+                // to prevent an idex error
+                if pos + 1 == len {
+                    new_bytes.push(0xEF);
+                    new_bytes.push(0xBF);
+                    new_bytes.push(0xBD);
+                    break;
+                }
+                // Katakana
+                // 0x00-0x3F is never used
+                // 0x7F is never used
+                match v[pos] {
+                    0x81 => {
+                        match v[pos + 1] {
+                            0x5B => {
+                                new_bytes.push(0xE3);
+                                new_bytes.push(0x83);
+                                new_bytes.push(0xBC);
+                                pos += 1;
+                            }
+                            _ => {}
+                        };
                     }
 
+                    0x83 => {
+                        match v[pos + 1] {
+                            0x40..=0x5E => {
+                                new_bytes.push(0xE3);
+                                new_bytes.push(0x82);
+                                new_bytes.push(v[pos + 1] + 0x61);
+                                pos += 1;
+                            }
+                            0x5F..=0x7E => {
+                                new_bytes.push(0xE3);
+                                new_bytes.push(0x83);
+                                new_bytes.push(v[pos + 1] + 0x21);
+                                pos += 1;
+                            }
+                            0x80..=0x96 => {
+                                new_bytes.push(0xE3);
+                                new_bytes.push(0x83);
+                                new_bytes.push(v[pos + 1] + 0x20);
+                                pos += 1;
+                            }
+                            _ => {}
+                        };
+                    }
                     _ => {}
                 };
             }
@@ -70,9 +80,9 @@ pub fn shift_jis_to_utf8(v: &[u8]) -> Vec<u8> {
             _ => {
                 new_bytes.push(0xEF);
                 new_bytes.push(0xBF);
-                new_bytes.push(0x8D);
+                new_bytes.push(0xBD);
             }
-        };
+        }
         pos += 1;
     }
     new_bytes
@@ -124,7 +134,20 @@ mod test {
     }
 
     #[test]
+    fn shift_jis_double_byte_missing_second_bye() {
+        // 0x83 is a double byte char. If the second byte is missing it shouldn't panic / crash
+        assert_eq!(
+            "�".to_string(),
+            String::from_utf8_lossy(&shift_jis_to_utf8(&[0x83]))
+        );
+        assert_eq!(
+            "キ�".to_string(),
+            String::from_utf8_lossy(&shift_jis_to_utf8(&[0x83, 0x4C, 0x83]))
+        );
+    }
+
     // Test Katakana
+    #[test]
     fn shift_jis_katakana_double_byte_ki() {
         // A 0x82.. value
         assert_eq!(

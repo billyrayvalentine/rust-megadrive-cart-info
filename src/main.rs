@@ -1,28 +1,47 @@
 // commandline tool for megadrive-cart-info
-
 use megadrive_cart_info::megadrive::MegaDriveROMHeader;
 use std::env;
 use std::path::Path;
 use std::process;
 
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+
 fn main() {
     fn print_usage() {
-        println!("megadrive_cart_info <ARGS>");
+        println!("usage: megadrive_cart_info [-hV] <filename>");
+        println!("");
+        println!("filename\t name of rom file to inspect");
+        println!("-h, --help\t show this help message and exit");
+        println!("-V, --version\t show version number and exit");
     };
 
-    let args: Vec<String> = env::args().collect();
+    fn print_version() {
+        println!("{}", VERSION);
+    }
 
-    //println!("Len = {}", args.len());
+    let args: Vec<String> = env::args().collect();
 
     if args.len() != 2 {
         print_usage();
         process::exit(1);
     }
 
-    let filename = &args[1];
-    //println!("Got {}", filename);
+    if args.contains(&"-V".to_string()) || args.contains(&"--version".to_string()) {
+        print_version();
+        process::exit(0);
+    }
 
-    let a = MegaDriveROMHeader::new_from_file(Path::new(filename)).unwrap();
+    if args.contains(&"-h".to_string()) || args.contains(&"--help".to_string()) {
+        print_usage();
+        process::exit(0);
+    }
+
+    let filename = &args[1];
+
+    let a = MegaDriveROMHeader::new_from_file(Path::new(filename)).unwrap_or_else(|err| {
+        println!("Couldn't open {} - {}", filename, err);
+        process::exit(1);
+    });
 
     // Default print output - trim whitespace, use hex
     println!("filename: {}", filename);
